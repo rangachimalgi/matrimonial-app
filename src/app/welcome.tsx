@@ -1,4 +1,5 @@
-import { Alert, StyleSheet, Text, View } from 'react-native';
+import { router } from 'expo-router';
+import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { GetStartedButton } from '@/components/welcome/GetStartedButton';
 import { WelcomeHero } from '@/components/welcome/WelcomeHero';
@@ -6,8 +7,7 @@ import { colors, radius, spacing } from '@/constants/theme';
 
 export default function WelcomeScreen() {
   const handleGetStarted = () => {
-    // Next step: auth / profile setup
-    Alert.alert('Spark', 'Auth screens coming next.');
+    router.push('/create-profile');
   };
 
   return (

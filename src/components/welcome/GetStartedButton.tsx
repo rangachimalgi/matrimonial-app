@@ -1,5 +1,4 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { colors, radius, spacing } from '@/constants/theme';
 
 type Props = {
@@ -16,27 +15,28 @@ export function GetStartedButton({ onPress, label = 'Get Started' }: Props) {
       style={({ pressed }) => [styles.button, pressed && styles.pressed]}
     >
       <Text style={styles.label}>{label}</Text>
-      {/* <View style={styles.iconWrap}>
-        <Ionicons name="sparkles" size={14} color={colors.spark} />
-      </View> */}
+      <View style={styles.dot}>
+        <Text style={styles.heart}>♥</Text>
+      </View>
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   button: {
-    alignSelf: 'flex-end',
+    alignSelf: 'stretch',
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: spacing.sm,
     backgroundColor: colors.black,
-    paddingVertical: 14,
-    paddingHorizontal: 22,
-    borderRadius: radius.lg,
+    paddingVertical: 18,
+    paddingHorizontal: 24,
+    borderRadius: radius.xl,
   },
   pressed: {
-    opacity: 0.88,
-    transform: [{ scale: 0.98 }],
+    opacity: 0.9,
+    transform: [{ scale: 0.985 }],
   },
   label: {
     color: colors.white,
@@ -44,7 +44,18 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     letterSpacing: 0.2,
   },
-  iconWrap: {
-    marginLeft: 2,
+  dot: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: 'rgba(255,255,255,0.12)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  heart: {
+    color: '#FF6B8A',
+    fontSize: 11,
+    fontWeight: '700',
+    marginTop: 1,
   },
 });
