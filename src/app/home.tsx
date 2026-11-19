@@ -3,10 +3,15 @@ import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BlurredMatchCard } from '@/components/home/BlurredMatchCard';
 import { PrimaryButton } from '@/components/ui/PrimaryButton';
+import { useProfile } from '@/context/ProfileContext';
 import { colors, radius, spacing } from '@/constants/theme';
 
 export default function HomeScreen() {
+  const { status } = useProfile();
+  const isPending = status === 'pending';
+
   const handleCompleteProfile = () => {
+    if (isPending) return;
     router.push('/create-profile');
   };
 
@@ -22,14 +27,18 @@ export default function HomeScreen() {
 
         <View style={styles.gate}>
           <View style={styles.gateCard}>
-            <Text style={styles.gateTitle}>Complete your profile</Text>
+            <Text style={styles.gateTitle}>
+              {isPending ? 'Waiting for confirmation' : 'Complete your profile'}
+            </Text>
             <Text style={styles.gateBody}>
-              Matches are waiting — finish a few details to unlock clear
-              profiles and start connecting.
+              {isPending
+                ? 'Your profile was sent for verification. We’ll unlock matches once it’s confirmed.'
+                : 'Matches are waiting — finish a few details to unlock clear profiles and start connecting.'}
             </Text>
             <PrimaryButton
-              label="Complete profile"
+              label={isPending ? 'Pending verification' : 'Complete profile'}
               onPress={handleCompleteProfile}
+              disabled={isPending}
             />
           </View>
         </View>

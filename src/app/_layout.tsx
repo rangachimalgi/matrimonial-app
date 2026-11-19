@@ -2,8 +2,10 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StyleSheet } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { ProfileProvider, useProfile } from '@/context/ProfileContext';
+import { ToastProvider } from '@/context/ToastContext';
 import { colors } from '@/constants/theme';
 
 SplashScreen.preventAutoHideAsync();
@@ -13,27 +15,27 @@ SplashScreen.setOptions({
   fade: true,
 });
 
-export default function RootLayout() {
-  const [isReady, setIsReady] = useState(false);
+function RootNavigator() {
+  const { ready } = useProfile();
+  const [splashDone, setSplashDone] = useState(false);
 
   useEffect(() => {
-    // Placeholder for fonts / auth bootstrap later
-    const timer = setTimeout(() => setIsReady(true), 400);
+    const timer = setTimeout(() => setSplashDone(true), 400);
     return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
-    if (isReady) {
+    if (ready && splashDone) {
       SplashScreen.hide();
     }
-  }, [isReady]);
+  }, [ready, splashDone]);
 
-  if (!isReady) {
+  if (!ready || !splashDone) {
     return null;
   }
 
   return (
-    <GestureHandlerRootView style={styles.root}>
+    <>
       <StatusBar style="dark" />
       <Stack
         screenOptions={{
@@ -42,6 +44,18 @@ export default function RootLayout() {
           animation: 'fade',
         }}
       />
+    </>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <GestureHandlerRootView style={styles.root}>
+      <ProfileProvider>
+        <ToastProvider>
+          <RootNavigator />
+        </ToastProvider>
+      </ProfileProvider>
     </GestureHandlerRootView>
   );
 }

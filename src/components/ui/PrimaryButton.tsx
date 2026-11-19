@@ -5,21 +5,27 @@ type Props = {
   label: string;
   onPress: () => void;
   style?: ViewStyle;
+  disabled?: boolean;
 };
 
-export function PrimaryButton({ label, onPress, style }: Props) {
+export function PrimaryButton({ label, onPress, style, disabled }: Props) {
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={label}
+      accessibilityState={{ disabled: !!disabled }}
+      disabled={disabled}
       onPress={onPress}
       style={({ pressed }) => [
         styles.button,
-        pressed && styles.pressed,
+        disabled && styles.disabled,
+        pressed && !disabled && styles.pressed,
         style,
       ]}
     >
-      <Text style={styles.label}>{label}</Text>
+      <Text style={[styles.label, disabled && styles.labelDisabled]}>
+        {label}
+      </Text>
     </Pressable>
   );
 }
@@ -32,6 +38,9 @@ const styles = StyleSheet.create({
     borderRadius: radius.lg,
     alignItems: 'center',
   },
+  disabled: {
+    backgroundColor: colors.blueMute,
+  },
   pressed: {
     opacity: 0.88,
     transform: [{ scale: 0.985 }],
@@ -40,5 +49,8 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontSize: 16,
     fontWeight: '700',
+  },
+  labelDisabled: {
+    color: colors.blueDeep,
   },
 });

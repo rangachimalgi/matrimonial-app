@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -12,26 +12,73 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Field } from '@/components/ui/Field';
 import { PrimaryButton } from '@/components/ui/PrimaryButton';
+import { useProfile } from '@/context/ProfileContext';
+import { useToast } from '@/context/ToastContext';
 import { colors, radius, spacing } from '@/constants/theme';
 
 const GENDERS = ['Woman', 'Man', 'Other'] as const;
 
-export default function CreateProfileScreen() {
-  const [name, setName] = useState('');
-  const [age, setAge] = useState('');
-  const [gender, setGender] = useState<(typeof GENDERS)[number] | null>(null);
-  const [caste, setCaste] = useState('');
-  const [gotra, setGotra] = useState('');
+type Errors = Partial<Record<'name' | 'age' | 'gender' | 'caste' | 'gotra', string>>;
 
-  const goHome = () => {
+export default function CreateProfileScreen() {
+  const { draft, submitForVerification, skipProfile } = useProfile();
+  const { showToast } = useToast();
+
+  const [name, setName] = useState(draft?.name ?? '');
+  const [age, setAge] = useState(draft?.age ?? '');
+  const [gender, setGender] = useState<(typeof GENDERS)[number] | null>(
+    (draft?.gender as (typeof GENDERS)[number] | undefined) ?? null,
+  );
+  const [caste, setCaste] = useState(draft?.caste ?? '');
+  const [gotra, setGotra] = useState(draft?.gotra ?? '');
+  const [errors, setErrors] = useState<Errors>({});
+  const [submitting, setSubmitting] = useState(false);
+
+  const ageNumber = useMemo(() => Number(age), [age]);
+
+  const validate = (): Errors => {
+    const next: Errors = {};
+    if (!name.trim()) next.name = 'Name is required';
+    if (!age.trim()) next.age = 'Age is required';
+    else if (!Number.isFinite(ageNumber) || ageNumber < 18 || ageNumber > 80) {
+      next.age = 'Enter age 18–80';
+    }
+    if (!gender) next.gender = 'Select gender';
+    if (!caste.trim()) next.caste = 'Caste is required';
+    if (!gotra.trim()) next.gotra = 'Gotra is required';
+    return next;
+  };
+
+  const goHome = async () => {
+    await skipProfile();
     router.replace('/home');
+  };
+
+  const handleContinue = async () => {
+    const nextErrors = validate();
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length > 0) return;
+
+    setSubmitting(true);
+    try {
+      await submitForVerification({
+        name: name.trim(),
+        age: age.trim(),
+        gender: gender!,
+        caste: caste.trim(),
+        gotra: gotra.trim(),
+      });
+      showToast('Sent for verification');
+      router.replace('/home');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.header}>
         <View>
-          {/* <Text style={styles.kicker}>Step 1 · Basics</Text> */}
           <Text style={styles.headerTitle}>Your profile</Text>
         </View>
         <Pressable
@@ -60,10 +107,6 @@ export default function CreateProfileScreen() {
         >
           <View style={styles.heroCopy}>
             <Text style={styles.headline}>Who are we matching for?</Text>
-            {/* <Text style={styles.subhead}>
-              Just the essentials for now. You can refine caste, family, and
-              photos later.
-            </Text> */}
           </View>
 
           <View style={styles.card}>
@@ -71,8 +114,12 @@ export default function CreateProfileScreen() {
               label="Full name"
               placeholder="Your name"
               value={name}
-              onChangeText={setName}
+              onChangeText={(v) => {
+                setName(v);
+                if (errors.name) setErrors((e) => ({ ...e, name: undefined }));
+              }}
               autoCapitalize="words"
+              error={errors.name}
             />
 
             <View style={styles.row}>
@@ -81,9 +128,13 @@ export default function CreateProfileScreen() {
                   label="Age"
                   placeholder="25"
                   value={age}
-                  onChangeText={setAge}
+                  onChangeText={(v) => {
+                    setAge(v.replace(/[^0-9]/g, ''));
+                    if (errors.age) setErrors((e) => ({ ...e, age: undefined }));
+                  }}
                   keyboardType="number-pad"
                   maxLength={2}
+                  error={errors.age}
                 />
               </View>
               <View style={styles.genderField}>
@@ -94,7 +145,12 @@ export default function CreateProfileScreen() {
                     return (
                       <Pressable
                         key={option}
-                        onPress={() => setGender(option)}
+                        onPress={() => {
+                          setGender(option);
+                          if (errors.gender) {
+                            setErrors((e) => ({ ...e, gender: undefined }));
+                          }
+                        }}
                         style={[styles.chip, selected && styles.chipSelected]}
                       >
                         <Text
@@ -109,6 +165,9 @@ export default function CreateProfileScreen() {
                     );
                   })}
                 </View>
+                {errors.gender ? (
+                  <Text style={styles.inlineError}>{errors.gender}</Text>
+                ) : null}
               </View>
             </View>
 
@@ -120,23 +179,34 @@ export default function CreateProfileScreen() {
               label="Caste"
               placeholder="e.g. Brahmin"
               value={caste}
-              onChangeText={setCaste}
+              onChangeText={(v) => {
+                setCaste(v);
+                if (errors.caste) setErrors((e) => ({ ...e, caste: undefined }));
+              }}
               autoCapitalize="words"
+              error={errors.caste}
             />
 
             <Field
               label="Gotra"
               placeholder="e.g. Bharadwaj"
               value={gotra}
-              onChangeText={setGotra}
+              onChangeText={(v) => {
+                setGotra(v);
+                if (errors.gotra) setErrors((e) => ({ ...e, gotra: undefined }));
+              }}
               autoCapitalize="words"
+              error={errors.gotra}
             />
           </View>
         </ScrollView>
 
         <View style={styles.footer}>
-          <PrimaryButton label="Continue" onPress={goHome} />
-          {/* <Text style={styles.footerHint}>Takes under a minute · editable later</Text> */}
+          <PrimaryButton
+            label={submitting ? 'Submitting…' : 'Continue'}
+            onPress={handleContinue}
+            disabled={submitting}
+          />
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -158,13 +228,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingTop: spacing.xs,
     paddingBottom: spacing.sm,
-  },
-  kicker: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: colors.orange,
-    letterSpacing: 0.4,
-    textTransform: 'uppercase',
   },
   headerTitle: {
     marginTop: 2,
@@ -212,13 +275,6 @@ const styles = StyleSheet.create({
     fontWeight: '800',
     color: colors.text,
     letterSpacing: -0.4,
-  },
-  subhead: {
-    marginTop: spacing.sm,
-    fontSize: 14,
-    lineHeight: 21,
-    color: colors.textSubtle,
-    fontWeight: '500',
   },
   card: {
     backgroundColor: colors.white,
@@ -275,6 +331,11 @@ const styles = StyleSheet.create({
   chipTextSelected: {
     color: colors.white,
   },
+  inlineError: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: colors.orange,
+  },
   divider: {
     height: 1,
     backgroundColor: colors.border,
@@ -292,11 +353,5 @@ const styles = StyleSheet.create({
     paddingTop: spacing.md,
     paddingBottom: spacing.sm,
     gap: spacing.sm,
-  },
-  footerHint: {
-    textAlign: 'center',
-    fontSize: 12,
-    fontWeight: '500',
-    color: colors.textSubtle,
   },
 });
