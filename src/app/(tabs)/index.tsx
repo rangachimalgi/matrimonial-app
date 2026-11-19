@@ -30,7 +30,7 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={styles.safe} edges={['top']}>
       <View style={styles.top}>
         <Text style={styles.brand}>Matrimonial</Text>
         <Text style={styles.hint}>
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   stage: {
     flex: 1,
     marginTop: spacing.sm,
-    marginBottom: spacing.md,
+    marginBottom: spacing.sm,
     position: 'relative',
   },
   gate: {

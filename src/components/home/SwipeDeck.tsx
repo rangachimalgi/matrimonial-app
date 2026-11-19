@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
   },
   counter: {
     position: 'absolute',
-    bottom: -2,
+    bottom: 8,
     alignSelf: 'center',
     fontSize: 12,
     fontWeight: '600',

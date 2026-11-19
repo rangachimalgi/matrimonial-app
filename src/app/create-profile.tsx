@@ -51,7 +51,7 @@ export default function CreateProfileScreen() {
 
   const goHome = async () => {
     await skipProfile();
-    router.replace('/home');
+    router.replace('/(tabs)');
   };
 
   const handleContinue = async () => {
@@ -69,7 +69,7 @@ export default function CreateProfileScreen() {
         gotra: gotra.trim(),
       });
       showToast('Sent for verification');
-      router.replace('/home');
+      router.replace('/(tabs)');
     } finally {
       setSubmitting(false);
     }
