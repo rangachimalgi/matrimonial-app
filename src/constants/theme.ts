@@ -1,19 +1,39 @@
+/**
+ * Palette: black (primary), blue (atmosphere), orange (subtle accents).
+ */
 export const colors = {
-  background: '#B8C4FF',
-  backgroundSoft: '#C5CFFF',
-  backgroundDeep: '#9AAEF5',
-  homeBg: '#EEF1FF',
-  black: '#0A0A0A',
+  black: '#0B0B0C',
   white: '#FFFFFF',
-  text: '#0A0A0A',
-  textMuted: '#2A2A2A',
-  textSubtle: '#6B6B7B',
-  spark: '#8B7CFF',
-  orbit: 'rgba(40, 40, 60, 0.35)',
-  cloud: 'rgba(255, 255, 255, 0.55)',
-  inputBg: 'rgba(255, 255, 255, 0.72)',
-  border: 'rgba(10, 10, 10, 0.08)',
-  overlay: 'rgba(10, 10, 20, 0.28)',
+
+  // Blue family
+  blue: '#3D5A80',
+  blueSoft: '#D7E3F4',
+  blueMute: '#B7C9E0',
+  blueDeep: '#1F3554',
+
+  // Orange accents (use sparingly)
+  orange: '#E8753A',
+  orangeSoft: '#F6D2BC',
+  orangeWash: 'rgba(232, 117, 58, 0.14)',
+
+  // Surfaces
+  background: '#D7E3F4',
+  backgroundSoft: '#E5EEF8',
+  backgroundDeep: '#B7C9E0',
+  homeBg: '#EEF3F9',
+  inputBg: 'rgba(255, 255, 255, 0.85)',
+
+  // Text
+  text: '#0B0B0C',
+  textMuted: '#2C3340',
+  textSubtle: '#6B7382',
+
+  // Legacy aliases used across screens
+  spark: '#E8753A',
+  orbit: 'rgba(31, 53, 84, 0.28)',
+  cloud: 'rgba(255, 255, 255, 0.6)',
+  border: 'rgba(11, 11, 12, 0.08)',
+  overlay: 'rgba(11, 11, 12, 0.3)',
 } as const;
 
 export const spacing = {

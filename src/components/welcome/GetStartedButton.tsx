@@ -15,9 +15,9 @@ export function GetStartedButton({ onPress, label = 'Get Started' }: Props) {
       style={({ pressed }) => [styles.button, pressed && styles.pressed]}
     >
       <Text style={styles.label}>{label}</Text>
-      <View style={styles.dot}>
+      {/* <View style={styles.dot}>
         <Text style={styles.heart}>♥</Text>
-      </View>
+      </View> */}
     </Pressable>
   );
 }
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   heart: {
-    color: '#FF6B8A',
+    color: colors.orange,
     fontSize: 11,
     fontWeight: '700',
     marginTop: 1,

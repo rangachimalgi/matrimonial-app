@@ -23,7 +23,7 @@ export default function WelcomeScreen() {
         </Text>
 
         <View style={styles.sparkBadge}>
-          <Text style={styles.sparkBadgeText}>Spark.</Text>
+          <Text style={styles.sparkBadgeText}>Match.</Text>
         </View>
 
         <Text style={styles.subhead}>
@@ -79,13 +79,13 @@ const styles = StyleSheet.create({
   sparkBadge: {
     alignSelf: 'flex-start',
     marginTop: spacing.sm,
-    backgroundColor: colors.black,
+    // backgroundColor: colors.white,
     paddingHorizontal: 14,
     paddingVertical: 6,
     borderRadius: radius.md,
   },
   sparkBadgeText: {
-    color: colors.white,
+    color: colors.orange,
     fontSize: 34,
     fontWeight: '800',
     letterSpacing: -0.5,

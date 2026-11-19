@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   hint: {
     fontSize: 13,
     fontWeight: '600',
-    color: colors.textSubtle,
+    color: colors.orange,
   },
   stage: {
     flex: 1,
@@ -88,6 +88,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '800',
     color: colors.text,
+    borderLeftWidth: 3,
+    borderLeftColor: colors.orange,
+    paddingLeft: spacing.sm,
   },
   gateBody: {
     fontSize: 14,

@@ -31,7 +31,7 @@ export default function CreateProfileScreen() {
     <SafeAreaView style={styles.safe}>
       <View style={styles.header}>
         <View>
-          <Text style={styles.kicker}>Step 1 · Basics</Text>
+          {/* <Text style={styles.kicker}>Step 1 · Basics</Text> */}
           <Text style={styles.headerTitle}>Your profile</Text>
         </View>
         <Pressable
@@ -60,10 +60,10 @@ export default function CreateProfileScreen() {
         >
           <View style={styles.heroCopy}>
             <Text style={styles.headline}>Who are we matching for?</Text>
-            <Text style={styles.subhead}>
+            {/* <Text style={styles.subhead}>
               Just the essentials for now. You can refine caste, family, and
               photos later.
-            </Text>
+            </Text> */}
           </View>
 
           <View style={styles.card}>
@@ -136,7 +136,7 @@ export default function CreateProfileScreen() {
 
         <View style={styles.footer}>
           <PrimaryButton label="Continue" onPress={goHome} />
-          <Text style={styles.footerHint}>Takes under a minute · editable later</Text>
+          {/* <Text style={styles.footerHint}>Takes under a minute · editable later</Text> */}
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
   kicker: {
     fontSize: 12,
     fontWeight: '700',
-    color: colors.spark,
+    color: colors.orange,
     letterSpacing: 0.4,
     textTransform: 'uppercase',
   },
@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
   progressFill: {
     height: '100%',
     borderRadius: 2,
-    backgroundColor: colors.black,
+    backgroundColor: colors.orange,
   },
   scroll: {
     paddingBottom: spacing.xl,

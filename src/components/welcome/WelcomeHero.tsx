@@ -67,7 +67,7 @@ export function WelcomeHero() {
       </View>
 
       <View style={[styles.iconChip, styles.heart]}>
-        <Ionicons name="heart" size={14} color={colors.black} />
+        <Ionicons name="heart" size={14} color={colors.orange} />
       </View>
 
       <View style={[styles.iconChip, styles.music]}>

@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   },
   veil: {
     ...StyleSheet.absoluteFill,
-    backgroundColor: 'rgba(184, 196, 255, 0.18)',
+    backgroundColor: 'rgba(61, 90, 128, 0.16)',
     zIndex: 3,
   },
 });
