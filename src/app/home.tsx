@@ -2,13 +2,27 @@ import { router } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BlurredMatchCard } from '@/components/home/BlurredMatchCard';
+import { SwipeDeck } from '@/components/home/SwipeDeck';
 import { PrimaryButton } from '@/components/ui/PrimaryButton';
 import { useProfile } from '@/context/ProfileContext';
+import { useToast } from '@/context/ToastContext';
 import { colors, radius, spacing } from '@/constants/theme';
+import { useEffect, useRef } from 'react';
 
 export default function HomeScreen() {
   const { status } = useProfile();
+  const { showToast } = useToast();
+  const toasted = useRef(false);
+
   const isPending = status === 'pending';
+  const isVerified = status === 'verified';
+
+  useEffect(() => {
+    if (isVerified && !toasted.current) {
+      toasted.current = true;
+      showToast('Profile confirmed — matches unlocked');
+    }
+  }, [isVerified, showToast]);
 
   const handleCompleteProfile = () => {
     if (isPending) return;
@@ -18,30 +32,41 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.top}>
-        <Text style={styles.brand}>Spark</Text>
-        <Text style={styles.hint}>Discover</Text>
+        <Text style={styles.brand}>Matrimonial</Text>
+        <Text style={styles.hint}>
+          {isVerified ? 'Swipe · Scroll details' : 'Discover'}
+        </Text>
       </View>
 
       <View style={styles.stage}>
-        <BlurredMatchCard />
-
-        <View style={styles.gate}>
-          <View style={styles.gateCard}>
-            <Text style={styles.gateTitle}>
-              {isPending ? 'Waiting for confirmation' : 'Complete your profile'}
-            </Text>
-            <Text style={styles.gateBody}>
-              {isPending
-                ? 'Your profile was sent for verification. We’ll unlock matches once it’s confirmed.'
-                : 'Matches are waiting — finish a few details to unlock clear profiles and start connecting.'}
-            </Text>
-            <PrimaryButton
-              label={isPending ? 'Pending verification' : 'Complete profile'}
-              onPress={handleCompleteProfile}
-              disabled={isPending}
-            />
-          </View>
-        </View>
+        {isVerified ? (
+          <SwipeDeck />
+        ) : (
+          <>
+            <BlurredMatchCard />
+            <View style={styles.gate}>
+              <View style={styles.gateCard}>
+                <Text style={styles.gateTitle}>
+                  {isPending
+                    ? 'Waiting for confirmation'
+                    : 'Complete your profile'}
+                </Text>
+                <Text style={styles.gateBody}>
+                  {isPending
+                    ? 'Your profile was sent for verification. Matches unlock in a few seconds…'
+                    : 'Matches are waiting — finish a few details to unlock clear profiles and start connecting.'}
+                </Text>
+                <PrimaryButton
+                  label={
+                    isPending ? 'Pending verification' : 'Complete profile'
+                  }
+                  onPress={handleCompleteProfile}
+                  disabled={isPending}
+                />
+              </View>
+            </View>
+          </>
+        )}
       </View>
     </SafeAreaView>
   );

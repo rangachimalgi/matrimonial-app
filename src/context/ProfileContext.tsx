@@ -22,6 +22,7 @@ type ProfileContextValue = {
   draft: ProfileDraft | null;
   submitForVerification: (draft: ProfileDraft) => Promise<void>;
   skipProfile: () => Promise<void>;
+  markVerified: () => Promise<void>;
 };
 
 const ProfileContext = createContext<ProfileContextValue | null>(null);
@@ -59,10 +60,29 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
 
   const skipProfile = useCallback(async () => {
     await persist({
-      status: state.status === 'pending' ? 'pending' : 'incomplete',
+      status:
+        state.status === 'pending' || state.status === 'verified'
+          ? state.status
+          : 'incomplete',
       draft: state.draft ?? emptyDraft,
     });
   }, [persist, state.draft, state.status]);
+
+  const markVerified = useCallback(async () => {
+    await persist({
+      status: 'verified',
+      draft: state.draft,
+    });
+  }, [persist, state.draft]);
+
+  // Demo: auto-approve after waiting for confirmation
+  useEffect(() => {
+    if (state.status !== 'pending') return;
+    const timer = setTimeout(() => {
+      void markVerified();
+    }, 4000);
+    return () => clearTimeout(timer);
+  }, [state.status, markVerified]);
 
   const value = useMemo(
     () => ({
@@ -71,8 +91,16 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
       draft: state.draft,
       submitForVerification,
       skipProfile,
+      markVerified,
     }),
-    [ready, state.status, state.draft, submitForVerification, skipProfile],
+    [
+      ready,
+      state.status,
+      state.draft,
+      submitForVerification,
+      skipProfile,
+      markVerified,
+    ],
   );
 
   return (

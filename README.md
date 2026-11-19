@@ -1,4 +1,4 @@
-# Spark — Matrimonial App
+# Matrimonial App
 
 React Native (Expo) + Supabase matrimonial app.
 
@@ -19,15 +19,12 @@ npm start
 ```
 src/
   app/                 # Expo Router screens (routes only)
-    _layout.tsx
-    index.tsx
-    welcome.tsx
   components/
-    welcome/           # UI pieces for welcome flow
   constants/
-    theme.ts
+  context/
+  lib/
   assets/images/
 ```
 
 Native splash is configured in `app.json` via `expo-splash-screen`.
-The first in-app screen is `welcome` (Get Started).
+Branded in-app splash shows the Matrimonial wordmark while the app boots.

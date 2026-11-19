@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { BrandSplash } from '@/components/BrandSplash';
 import { ProfileProvider, useProfile } from '@/context/ProfileContext';
 import { ToastProvider } from '@/context/ToastContext';
 import { colors } from '@/constants/theme';
@@ -11,7 +12,7 @@ import { colors } from '@/constants/theme';
 SplashScreen.preventAutoHideAsync();
 
 SplashScreen.setOptions({
-  duration: 600,
+  duration: 500,
   fade: true,
 });
 
@@ -20,18 +21,14 @@ function RootNavigator() {
   const [splashDone, setSplashDone] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setSplashDone(true), 400);
+    // Hand off native → branded splash immediately
+    SplashScreen.hide();
+    const timer = setTimeout(() => setSplashDone(true), 1400);
     return () => clearTimeout(timer);
   }, []);
 
-  useEffect(() => {
-    if (ready && splashDone) {
-      SplashScreen.hide();
-    }
-  }, [ready, splashDone]);
-
   if (!ready || !splashDone) {
-    return null;
+    return <BrandSplash />;
   }
 
   return (
